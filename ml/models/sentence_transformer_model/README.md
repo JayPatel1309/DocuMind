@@ -1,6 +1,4 @@
 ---
-base_model:
-  - nreimers/MiniLM-L6-H384-uncased
 language: en
 license: apache-2.0
 library_name: sentence-transformers
@@ -9,6 +7,7 @@ tags:
 - feature-extraction
 - sentence-similarity
 - transformers
+- text-embeddings-inference
 datasets:
 - s2orc
 - flax-sentence-embeddings/stackexchange_xml
@@ -35,8 +34,8 @@ pipeline_tag: sentence-similarity
 ---
 
 
-# all-MiniLM-L6-v2
-This is a [sentence-transformers](https://www.SBERT.net) model: It maps sentences & paragraphs to a 384 dimensional dense vector space and can be used for tasks like clustering or semantic search.
+# all-mpnet-base-v2
+This is a [sentence-transformers](https://www.SBERT.net) model: It maps sentences & paragraphs to a 768 dimensional dense vector space and can be used for tasks like clustering or semantic search.
 
 ## Usage (Sentence-Transformers)
 Using this model becomes easy when you have [sentence-transformers](https://www.SBERT.net) installed:
@@ -50,7 +49,7 @@ Then you can use the model like this:
 from sentence_transformers import SentenceTransformer
 sentences = ["This is an example sentence", "Each sentence is converted"]
 
-model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 embeddings = model.encode(sentences)
 print(embeddings)
 ```
@@ -74,8 +73,8 @@ def mean_pooling(model_output, attention_mask):
 sentences = ['This is an example sentence', 'Each sentence is converted']
 
 # Load model from HuggingFace Hub
-tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
-model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
+tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-mpnet-base-v2')
+model = AutoModel.from_pretrained('sentence-transformers/all-mpnet-base-v2')
 
 # Tokenize sentences
 encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
@@ -94,12 +93,38 @@ print("Sentence embeddings:")
 print(sentence_embeddings)
 ```
 
+## Usage (Text Embeddings Inference (TEI))
+
+[Text Embeddings Inference (TEI)](https://github.com/huggingface/text-embeddings-inference) is a blazing fast inference solution for text embedding models.
+
+- CPU:
+```bash
+docker run -p 8080:80 -v hf_cache:/data --pull always ghcr.io/huggingface/text-embeddings-inference:cpu-latest --model-id sentence-transformers/all-mpnet-base-v2 --pooling mean --dtype float16
+```
+
+- NVIDIA GPU:
+```bash
+docker run --gpus all -p 8080:80 -v hf_cache:/data --pull always ghcr.io/huggingface/text-embeddings-inference:cuda-latest --model-id sentence-transformers/all-mpnet-base-v2 --pooling mean --dtype float16
+```
+
+Send a request to `/v1/embeddings` to generate embeddings via the [OpenAI Embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create):
+```bash
+curl http://localhost:8080/v1/embeddings \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "sentence-transformers/all-mpnet-base-v2",
+    "input": ["This is an example sentence", "Each sentence is converted"]
+  }'
+```
+
+Or check the [Text Embeddings Inference API specification](https://huggingface.github.io/text-embeddings-inference/) instead.
+
 ------
 
 ## Background
 
 The project aims to train sentence embedding models on very large sentence level datasets using a self-supervised 
-contrastive learning objective. We used the pretrained [`nreimers/MiniLM-L6-H384-uncased`](https://huggingface.co/nreimers/MiniLM-L6-H384-uncased) model and fine-tuned in on a 
+contrastive learning objective. We used the pretrained [`microsoft/mpnet-base`](https://huggingface.co/microsoft/mpnet-base) model and fine-tuned in on a 
 1B sentence pairs dataset. We use a contrastive learning objective: given a sentence from the pair, the model should predict which out of a set of randomly sampled other sentences, was actually paired with it in our dataset.
 
 We developed this model during the 
@@ -109,17 +134,17 @@ organized by Hugging Face. We developed this model as part of the project:
 
 ## Intended uses
 
-Our model is intended to be used as a sentence and short paragraph encoder. Given an input text, it outputs a vector which captures 
+Our model is intented to be used as a sentence and short paragraph encoder. Given an input text, it outputs a vector which captures 
 the semantic information. The sentence vector may be used for information retrieval, clustering or sentence similarity tasks.
 
-By default, input text longer than 256 word pieces is truncated.
+By default, input text longer than 384 word pieces is truncated.
 
 
 ## Training procedure
 
 ### Pre-training 
 
-We use the pretrained [`nreimers/MiniLM-L6-H384-uncased`](https://huggingface.co/nreimers/MiniLM-L6-H384-uncased) model. Please refer to the model card for more detailed information about the pre-training procedure.
+We use the pretrained [`microsoft/mpnet-base`](https://huggingface.co/microsoft/mpnet-base) model. Please refer to the model card for more detailed information about the pre-training procedure.
 
 ### Fine-tuning 
 
