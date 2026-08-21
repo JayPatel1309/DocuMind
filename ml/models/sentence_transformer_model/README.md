@@ -7,7 +7,7 @@ tags:
 - feature-extraction
 - sentence-similarity
 - transformers
-- text-embeddings-inference
+- text_sample-embeddings-inference
 datasets:
 - s2orc
 - flax-sentence-embeddings/stackexchange_xml
@@ -99,12 +99,12 @@ print(sentence_embeddings)
 
 - CPU:
 ```bash
-docker run -p 8080:80 -v hf_cache:/data --pull always ghcr.io/huggingface/text-embeddings-inference:cpu-latest --model-id sentence-transformers/all-mpnet-base-v2 --pooling mean --dtype float16
+docker run -p 8080:80 -v hf_cache:/data --pull always ghcr.io/huggingface/text_sample-embeddings-inference:cpu-latest --model-id sentence-transformers/all-mpnet-base-v2 --pooling mean --dtype float16
 ```
 
 - NVIDIA GPU:
 ```bash
-docker run --gpus all -p 8080:80 -v hf_cache:/data --pull always ghcr.io/huggingface/text-embeddings-inference:cuda-latest --model-id sentence-transformers/all-mpnet-base-v2 --pooling mean --dtype float16
+docker run --gpus all -p 8080:80 -v hf_cache:/data --pull always ghcr.io/huggingface/text_sample-embeddings-inference:cuda-latest --model-id sentence-transformers/all-mpnet-base-v2 --pooling mean --dtype float16
 ```
 
 Send a request to `/v1/embeddings` to generate embeddings via the [OpenAI Embeddings API](https://platform.openai.com/docs/api-reference/embeddings/create):

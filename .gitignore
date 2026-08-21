@@ -1,0 +1,2 @@
+*.safetensors
+ml/classification/sentence_transformer_model/
