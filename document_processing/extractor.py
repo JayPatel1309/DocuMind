@@ -167,29 +167,21 @@ for path_object in folder_path.glob("*.pdf"):
         safe_confidence = float(confidence)
         summary_text=summary_creator(text_sum)
         keytopics=keytopics_find(text)
-        words=text.split(" ")
+        sentences_fullstop=text_sum.split(".")
         chunk = []
         chunk_index=0
 
         enter_data_documents(str(file_name),absolute_path,mime_type,file_size,predict_id,safe_confidence,date)
         enter_data_documents_metadata(str(file_name),title,author,date,summary_text,keytopics)
-        for word in words:
-            if len(chunk)==200:
-                chunk_string=" ".join(chunk)
-                index=faiss_index(r'P:\AI-Powered Document Classification and Intelligent Indexing\vector_store\global_vector_index.faiss',chunk_string,embedder)
-                enter_data_documents_chunk(file_name,chunk_index,chunk_string,index)
-                chunk_index+=1
-                chunk=[]
-                print(index)
-            chunk.append(word)
-
-        if len(chunk)>0:
-            chunk_string=" ".join(chunk)
+        for sentence in sentences_fullstop:
+            sentence = sentence.strip()
+            if len(sentence) < 15:
+                continue
             index = faiss_index(
                 r'P:\AI-Powered Document Classification and Intelligent Indexing\vector_store\global_vector_index.faiss',
-                chunk_string, embedder)
-            enter_data_documents_chunk(file_name, chunk_index, chunk_string, index)
-            chunk = []
+                sentence, embedder)
+            enter_data_documents_chunk(file_name, chunk_index, sentence, index)
+            chunk_index += 1
 
 
 
