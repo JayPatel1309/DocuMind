@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocuMind</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0a0a0a;
+      color: #e5e5e5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* Login Screen */
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .login-card {
+      background-color: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 32px;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .login-subtitle {
+      font-size: 13px;
+      color: #888888;
+      margin-top: 6px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #888888;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2a2a2a;
+      margin-bottom: 24px;
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-tag {
+      font-size: 11px;
+      color: #888888;
+      border: 1px solid #2a2a2a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .user-session-info {
+      font-size: 12px;
+      color: #888888;
+      border-left: 1px solid #2a2a2a;
+      padding-left: 16px;
+    }
+
+    .user-session-name {
+      color: #ffffff;
+      font-weight: 500;
+    }
+
+    .user-session-role {
+      color: #3b82f6;
+      font-weight: 500;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 24px;
+      border-bottom: 1px solid #2a2a2a;
+      margin-bottom: 24px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #888888;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 0;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      color: #e5e5e5;
+    }
+
+    .tab-btn.active {
+      color: #ffffff;
+      border-bottom: 2px solid #3b82f6;
+    }
+
+    /* Tab Content */
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Common Components */
+    .card {
+      background-color: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 20px;
+    }
+
+    .btn {
+      background-color: #3b82f6;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover:not(:disabled) {
+      background-color: #2563eb;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background-color: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      color: #e5e5e5;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background-color: #252525;
+    }
+
+    .input-text {
+      background-color: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      color: #e5e5e5;
+      font-family: inherit;
+      font-size: 14px;
+      padding: 8px 12px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .input-text:focus {
+      border-color: #3b82f6;
+    }
+
+    .input-text::placeholder {
+      color: #666666;
+    }
+
+    /* Alerts and Notices */
+    .notice {
+      padding: 12px 14px;
+      border-radius: 6px;
+      border: 1px solid #2a2a2a;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .notice-error {
+      background-color: #1a0f0f;
+      border-color: #4a1f1f;
+      color: #f87171;
+    }
+
+    .notice-info {
+      background-color: #0f172a;
+      border-color: #1e3a8a;
+      color: #93c5fd;
+    }
+
+    .notice-success {
+      background-color: #0f1f14;
+      border-color: #164e28;
+      color: #4ade80;
+    }
+
+    .text-secondary {
+      color: #888888;
+    }
+
+    .text-muted {
+      color: #666666;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 16px;
+      color: #888888;
+    }
+
+    .empty-state p {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #666666;
+    }
+
+    /* Tab 1: Dashboard */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background-color: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 16px 20px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #888888;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e5e5e5;
+    }
+
+    .table-container {
+      background-color: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      font-size: 12px;
+      font-weight: 600;
+      color: #888888;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 12px 16px;
+      border-bottom: 1px solid #2a2a2a;
+      background-color: #111111;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #2a2a2a;
+      color: #e5e5e5;
+      font-size: 13px;
+    }
+
+    tbody tr.doc-row {
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+
+    tbody tr.doc-row:hover {
+      background-color: #1a1a1a;
+    }
+
+    tbody tr.doc-row.is-expanded {
+      background-color: #171717;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      border: 1px solid #2a2a2a;
+      background-color: #1a1a1a;
+      color: #e5e5e5;
+    }
+
+    .badge-status-completed {
+      border-color: #1e3a24;
+      background-color: #112216;
+      color: #4ade80;
+    }
+
+    .badge-status-processing {
+      border-color: #3b2e14;
+      background-color: #21190c;
+      color: #facc15;
+    }
+
+    .badge-status-failed {
+      border-color: #4a1f1f;
+      background-color: #221111;
+      color: #f87171;
+    }
+
+    .doc-detail-cell {
+      padding: 0 !important;
+      background-color: #101010;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .doc-detail-content {
+      padding: 16px 20px;
+      border-left: 3px solid #3b82f6;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .detail-label {
+      font-size: 11px;
+      color: #888888;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .detail-val {
+      font-size: 13px;
+      color: #e5e5e5;
+    }
+
+    .detail-summary {
+      margin-bottom: 12px;
+    }
+
+    .detail-summary p {
+      color: #cccccc;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 4px;
+    }
+
+    .detail-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .topic-pill {
+      background-color: #1e1e1e;
+      border: 1px solid #2a2a2a;
+      color: #cccccc;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    /* Tab 2: Search */
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .search-results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chunk-card {
+      background-color: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chunk-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: #888;
+    }
+    
+    .doc-link {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    
+    .doc-link:hover {
+      text-decoration: underline;
+    }
+
+    .chunk-score {
+      font-size: 11px;
+      color: #3b82f6;
+      border: 1px solid #1e3a8a;
+      background-color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .chunk-text {
+      color: #e5e5e5;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Tab 3: Upload */
+    .upload-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .drop-zone {
+      background-color: #141414;
+      border: 1px dashed #2a2a2a;
+      border-radius: 6px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: #3b82f6;
+      background-color: #161616;
+    }
+
+    .drop-zone-icon {
+      color: #888888;
+      margin-bottom: 10px;
+    }
+
+    .drop-zone-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: #e5e5e5;
+      margin-bottom: 4px;
+    }
+
+    .drop-zone-hint {
+      font-size: 12px;
+      color: #888888;
+    }
+
+    .file-selected-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .file-selected-name {
+      color: #ffffff;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 12px;
+    }
+
+    .upload-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .result-card {
+      background-color: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 8px;
+    }
+
+    .result-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .result-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .result-category-badge {
+      background-color: #0f172a;
+      border: 1px solid #1e3a8a;
+      color: #93c5fd;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .loading-inline {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .search-bar {
+        flex-direction: column;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .user-session-info {
+        border-left: none;
+        padding-left: 0;
+      }
+      .tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="brand" style="justify-content: center; margin-bottom: 8px;">
+          <h1 class="brand-title" style="font-size: 20px;">DocuMind</h1>
+          <span class="brand-tag">RBAC</span>
+        </div>
+        <p class="login-subtitle">Sign in to access document intelligence</p>
+      </div>
+
+      <div id="login-error"></div>
+
+      <form id="login-form" onsubmit="handleLogin(event)" style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="form-group">
+          <label class="form-label" for="login-username">Username</label>
+          <input 
+            type="text" 
+            id="login-username" 
+            class="input-text" 
+            placeholder="Enter username" 
+            required 
+            autocomplete="username"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <input 
+            type="password" 
+            id="login-password" 
+            class="input-text" 
+            placeholder="Enter password" 
+            required 
+            autocomplete="current-password"
+          />
+        </div>
+
+        <button type="submit" id="login-btn" class="btn" style="width: 100%; height: 38px; margin-top: 4px;">
+          <span>Sign In</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Application -->
+  <div id="app-container" class="container" style="display: none;">
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <div class="brand">
+          <h1 class="brand-title">DocuMind</h1>
+          <span class="brand-tag">Document Intelligence</span>
+        </div>
+        <div class="user-session-info" id="user-info-bar">
+          Logged in as <span class="user-session-name" id="user-display-name">-</span> (<span class="user-session-role" id="user-display-role">-</span>)
+        </div>
+      </div>
+      <div class="header-right">
+        <button type="button" class="btn btn-secondary" style="padding: 4px 12px; font-size: 12px;" onclick="handleLogout()">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Tab Bar -->
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="dashboard" role="tab" aria-selected="true" onclick="switchTab('dashboard')">Dashboard</button>
+      <button class="tab-btn" data-tab="search" role="tab" aria-selected="false" onclick="switchTab('search')">Search</button>
+      <button class="tab-btn" data-tab="upload" role="tab" aria-selected="false" onclick="switchTab('upload')">Upload</button>
+    </nav>
+
+    <!-- Tab 1: Dashboard -->
+    <section id="tab-dashboard" class="tab-pane active" role="tabpanel">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Documents</div>
+          <div class="stat-value" id="stat-total-docs">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Categories</div>
+          <div class="stat-value" id="stat-categories">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg Confidence</div>
+          <div class="stat-value" id="stat-avg-confidence">-</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2 class="section-title">Documents</h2>
+        <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="loadDashboard()">
+          Refresh
+        </button>
+      </div>
+
+      <div id="dashboard-notice"></div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Confidence</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="documents-table-body">
+            <tr>
+              <td colspan="5" class="empty-state">Loading documents...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tab 2: Search -->
+    <section id="tab-search" class="tab-pane" role="tabpanel">
+      <form class="search-bar" onsubmit="handleSearch(event)">
+        <input 
+          type="text" 
+          id="search-input" 
+          class="input-text" 
+          placeholder="Search documents..." 
+          autocomplete="off"
+        />
+        <button type="submit" id="search-btn" class="btn">
+          <span>Search</span>
+        </button>
+      </form>
+
+      <div id="search-notice"></div>
+
+      <div id="search-results" class="search-results-list">
+        <div class="card empty-state">
+          Enter a query above to semantically search indexed documents.
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Upload -->
+    <section id="tab-upload" class="tab-pane" role="tabpanel">
+      <div class="upload-container">
+        <div 
+          id="drop-zone" 
+          class="drop-zone" 
+          onclick="document.getElementById('file-input').click()"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleFileDrop(event)"
+        >
+          <input 
+            type="file" 
+            id="file-input" 
+            accept="application/pdf,.pdf" 
+            style="display: none;" 
+            onchange="handleFileSelect(event)"
+          />
+          <div class="drop-zone-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <line x1="9" y1="15" x2="12" y2="12"></line>
+              <line x1="15" y1="15" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <div class="drop-zone-text">Choose a PDF or drag & drop it here</div>
+          <div class="drop-zone-hint">Supports PDF documents up to 50MB</div>
+        </div>
+
+        <div id="selected-file-container" style="display: none;">
+          <div class="file-selected-bar">
+            <span class="file-selected-name" id="selected-file-name">filename.pdf</span>
+            <button type="button" class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="clearSelectedFile()">Remove</button>
+          </div>
+        </div>
+
+        <div class="upload-actions">
+          <button type="button" id="upload-btn" class="btn" onclick="handleUpload()" disabled>
+            <span>Upload & Process</span>
+          </button>
+        </div>
+
+        <div id="upload-notice"></div>
+
+        <div id="upload-result-container" style="display: none;"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      selectedFile: null,
+      expandedDocId: null,
+      docDetailsCache: {},
+      isUploading: false,
+      isSearching: false
+    };
+
+    // Authentication Header Helper
+    function getAuthHeaders(extraHeaders = {}) {
+      const token = localStorage.getItem('auth_token') || '';
+      return {
+        'X-Username': token,
+        ...extraHeaders
+      };
+    }
+
+    // Check Authentication state
+    function checkAuth() {
+      const token = localStorage.getItem('auth_token');
+      const role = localStorage.getItem('auth_role');
+      const username = localStorage.getItem('auth_username') || token;
+
+      const loginScreen = document.getElementById('login-screen');
+      const appContainer = document.getElementById('app-container');
+
+      if (token) {
+        if (loginScreen) loginScreen.style.display = 'none';
+        if (appContainer) appContainer.style.display = 'block';
+
+        const nameEl = document.getElementById('user-display-name');
+        const roleEl = document.getElementById('user-display-role');
+        if (nameEl) nameEl.textContent = username || 'User';
+        if (roleEl) roleEl.textContent = role ? role.toUpperCase() : 'USER';
+
+        loadDashboard();
+      } else {
+        if (loginScreen) loginScreen.style.display = 'flex';
+        if (appContainer) appContainer.style.display = 'none';
+      }
+    }
+
+    // Login Handler
+    async function handleLogin(event) {
+      event.preventDefault();
+      const usernameInput = document.getElementById('login-username');
+      const passwordInput = document.getElementById('login-password');
+      const errorEl = document.getElementById('login-error');
+      const loginBtn = document.getElementById('login-btn');
+
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value;
+
+      errorEl.innerHTML = '';
+
+      if (!username || !password) {
+        errorEl.innerHTML = '<div class="notice notice-error">Please enter both username and password.</div>';
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span class="loading-inline"></span><span>Signing in...</span>';
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || errData.message || 'Invalid username or password');
+        }
+
+        const data = await res.json();
+        const token = data.token || username;
+        const role = data.role || 'USER';
+
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('auth_role', role);
+        localStorage.setItem('auth_username', username);
+
+        usernameInput.value = '';
+        passwordInput.value = '';
+        errorEl.innerHTML = '';
+
+        checkAuth();
+      } catch (err) {
+        errorEl.innerHTML = `<div class="notice notice-error">${escapeHtml(err.message)}</div>`;
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<span>Sign In</span>';
+      }
+    }
+
+    // Logout Handler
+    function handleLogout() {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_role');
+      localStorage.removeItem('auth_username');
+      state.selectedFile = null;
+      state.expandedDocId = null;
+      state.docDetailsCache = {};
+      
+      const errorEl = document.getElementById('login-error');
+      if (errorEl) errorEl.innerHTML = '';
+
+      checkAuth();
+    }
+
+    // Tab navigation
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isActive = btn.getAttribute('data-tab') === tabName;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.toggle('active', pane.id === `tab-${tabName}`);
+      });
+
+      if (tabName === 'dashboard') {
+        loadDashboard();
+      }
+    }
+
+    // Helper: format confidence to %
+    function formatConfidence(val) {
+      if (val === null || val === undefined || isNaN(val)) return 'N/A';
+      const num = Number(val);
+      const percent = num <= 1.0 ? num * 100 : num;
+      return `${percent.toFixed(1)}%`;
+    }
+
+    // Helper: format date
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return String(dateStr);
+        return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      } catch {
+        return String(dateStr);
+      }
+    }
+
+    // Helper: escape HTML
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Helper: format key topics safely
+    function formatTopics(topics) {
+      if (!topics) return 'None';
+      if (Array.isArray(topics)) {
+        return topics.filter(Boolean).map(t => escapeHtml(String(t))).join(', ') || 'None';
+      }
+      if (typeof topics === 'string') {
+        try {
+          const parsed = JSON.parse(topics);
+          if (Array.isArray(parsed)) {
+            return parsed.filter(Boolean).map(t => escapeHtml(String(t))).join(', ') || 'None';
+          }
+        } catch {}
+        return escapeHtml(topics);
+      }
+      return escapeHtml(String(topics));
+    }
+
+    // Tab 1: Load Dashboard Stats & Documents
+    async function loadDashboard() {
+      const noticeEl = document.getElementById('dashboard-notice');
+      noticeEl.innerHTML = '';
+
+      try {
+        const headers = getAuthHeaders();
+        // Fetch stats & documents in parallel with X-Username header
+        const [statsRes, docsRes] = await Promise.all([
+          fetch('/api/stats', { headers }).catch(e => ({ ok: false, error: e })),
+          fetch('/api/documents', { headers }).catch(e => ({ ok: false, error: e }))
+        ]);
+
+        if (statsRes.ok) {
+          const stats = await statsRes.json();
+          document.getElementById('stat-total-docs').textContent = stats.total_documents ?? 0;
+          document.getElementById('stat-categories').textContent = stats.total_categories ?? (stats.category_distribution ? Object.keys(stats.category_distribution).length : 0);
+          document.getElementById('stat-avg-confidence').textContent = formatConfidence(stats.avg_confidence);
+        } else {
+          document.getElementById('stat-total-docs').textContent = '-';
+          document.getElementById('stat-categories').textContent = '-';
+          document.getElementById('stat-avg-confidence').textContent = '-';
+        }
+
+        if (docsRes.ok) {
+          const docs = await docsRes.json();
+          renderDocumentsTable(Array.isArray(docs) ? docs : (docs.documents || []));
+        } else {
+          const tableBody = document.getElementById('documents-table-body');
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="5" class="empty-state">
+                Failed to load documents.
+                <p>Ensure the backend API server is active.</p>
+              </td>
+            </tr>
+          `;
+        }
+      } catch (err) {
+        noticeEl.innerHTML = `<div class="notice notice-error">Error loading dashboard: ${escapeHtml(err.message)}</div>`;
+      }
+    }
+
+    function renderDocumentsTable(documents) {
+      const tbody = document.getElementById('documents-table-body');
+      if (!documents || documents.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state">
+              No documents found.
+              <p>Upload documents via the Upload tab to get started.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      let html = '';
+      documents.forEach(doc => {
+        const id = doc.document_id ?? doc.id;
+        const filename = escapeHtml(doc.filename || doc.name || 'Untitled');
+        const category = escapeHtml(doc.category_name || doc.category || 'Uncategorized');
+        const confidence = formatConfidence(doc.classification_confidence ?? doc.confidence);
+        const date = formatDate(doc.upload_date || doc.date || doc.created_at);
+        const status = (doc.processing_status || doc.status || 'Completed').toLowerCase();
+        
+        let statusClass = 'badge';
+        if (status === 'completed' || status === 'indexed' || status === 'processed') {
+          statusClass += ' badge-status-completed';
+        } else if (status === 'processing' || status === 'pending') {
+          statusClass += ' badge-status-processing';
+        } else if (status === 'failed' || status === 'error') {
+          statusClass += ' badge-status-failed';
+        }
+
+        const isExpanded = state.expandedDocId === id;
+
+        html += `
+          <tr class="doc-row ${isExpanded ? 'is-expanded' : ''}" onclick="toggleDocDetails(${id})">
+            <td style="font-weight: 500;">${filename}</td>
+            <td><span class="badge">${category}</span></td>
+            <td>${confidence}</td>
+            <td class="text-secondary">${date}</td>
+            <td><span class="${statusClass}">${escapeHtml(doc.processing_status || doc.status || 'Completed')}</span></td>
+          </tr>
+        `;
+
+        if (isExpanded) {
+          html += `
+            <tr id="doc-detail-row-${id}">
+              <td colspan="5" class="doc-detail-cell">
+                <div class="doc-detail-content" id="doc-detail-box-${id}">
+                  <div class="text-secondary" style="padding: 8px 0;">Loading document details...</div>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
+      });
+
+      tbody.innerHTML = html;
+
+      // If a row was expanded, populate its details
+      if (state.expandedDocId) {
+        fetchAndRenderDocDetails(state.expandedDocId);
+      }
+    }
+
+    async function toggleDocDetails(docId) {
+      if (state.expandedDocId === docId) {
+        state.expandedDocId = null;
+        loadDashboard();
+      } else {
+        state.expandedDocId = docId;
+        loadDashboard();
+      }
+    }
+
+    async function fetchAndRenderDocDetails(docId) {
+      const container = document.getElementById(`doc-detail-box-${docId}`);
+      if (!container) return;
+
+      if (state.docDetailsCache[docId]) {
+        renderDocDetails(container, state.docDetailsCache[docId]);
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/documents/${docId}`, {
+          headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        const data = await res.json();
+        state.docDetailsCache[docId] = data;
+        renderDocDetails(container, data);
+      } catch (err) {
+        container.innerHTML = `
+          <div class="text-secondary" style="color: #f87171; font-size: 13px;">
+            Unable to load document details: ${escapeHtml(err.message)}
+          </div>
+        `;
+      }
+    }
+
+    function renderDocDetails(container, data) {
+      const title = escapeHtml(data.title || 'Untitled');
+      const author = escapeHtml(data.author || 'Unknown');
+      const summary = escapeHtml(data.summary || 'No summary available.');
+      const topics = formatTopics(data.key_topics);
+
+      container.innerHTML = `
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Title</span>
+            <span class="detail-val" style="font-weight: 500;">${title}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Author</span>
+            <span class="detail-val">${author}</span>
+          </div>
+        </div>
+        <div class="detail-summary">
+          <div class="detail-label">Summary</div>
+          <p>${summary}</p>
+        </div>
+        <div>
+          <div class="detail-label">Key Topics</div>
+          <div class="detail-val" style="margin-top: 4px;">${topics}</div>
+        </div>
+      `;
+    }
+
+    // Tab 2: Search Documents
+    async function handleSearch(event) {
+      event.preventDefault();
+      const input = document.getElementById('search-input');
+      const query = input.value.trim();
+      const resultsContainer = document.getElementById('search-results');
+      const noticeEl = document.getElementById('search-notice');
+      const searchBtn = document.getElementById('search-btn');
+
+      noticeEl.innerHTML = '';
+      if (!query) {
+        resultsContainer.innerHTML = '<div class="card empty-state">Please enter a search query.</div>';
+        return;
+      }
+
+      state.isSearching = true;
+      searchBtn.disabled = true;
+      searchBtn.innerHTML = '<span class="loading-inline"></span><span>Searching...</span>';
+      resultsContainer.innerHTML = '<div class="card empty-state">Searching documents...</div>';
+
+      try {
+        const res = await fetch('/api/search', {
+          method: 'POST',
+          headers: getAuthHeaders({
+            'Content-Type': 'application/json'
+          }),
+          body: JSON.stringify({ query: query })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || errData.message || `Server returned ${res.status}`);
+        }
+
+        const data = await res.json();
+        const results = Array.isArray(data) ? data : (data.results || []);
+
+        if (results.length === 0) {
+          resultsContainer.innerHTML = `
+            <div class="card empty-state">
+              No results found for "${escapeHtml(query)}".
+              <p>Try using different keywords or indexing more documents.</p>
+            </div>
+          `;
+        } else {
+          let html = '';
+          results.forEach((item, index) => {
+            const text = escapeHtml(item.chunk_text || item.text || item.content || '');
+            const score = item.score !== undefined && item.score !== null ? Number(item.score).toFixed(4) : null;
+            const docName = item.filename || item.document_name || item.title || null;
+            const docId = item.document_id;
+            const token = localStorage.getItem('auth_token') || '';
+            const viewUrl = docId ? `/api/documents/${docId}/view?user=${encodeURIComponent(token)}` : '#';
+
+            let titleHtml = docName ? escapeHtml(docName) : `Result #${index + 1}`;
+            if (docId) {
+              titleHtml = `<a href="${viewUrl}" target="_blank" class="doc-link">${titleHtml}</a>`;
+            }
+
+            html += `
+              <div class="chunk-card">
+                <div class="chunk-header">
+                  <span>${titleHtml}</span>
+                  ${score !== null ? `<span class="chunk-score">Score: ${score}</span>` : ''}
+                </div>
+                <div class="chunk-text">${text}</div>
+              </div>
+            `;
+          });
+          resultsContainer.innerHTML = html;
+        }
+      } catch (err) {
+        noticeEl.innerHTML = `<div class="notice notice-error">Search failed: ${escapeHtml(err.message)}</div>`;
+        resultsContainer.innerHTML = '<div class="card empty-state">An error occurred during search.</div>';
+      } finally {
+        state.isSearching = false;
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = '<span>Search</span>';
+      }
+    }
+
+    // Tab 3: Upload & File Handling
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('drop-zone').classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('drop-zone').classList.remove('drag-over');
+    }
+
+    function handleFileDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('drop-zone').classList.remove('drag-over');
+
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        validateAndSetFile(file);
+      }
+    }
+
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        validateAndSetFile(e.target.files[0]);
+      }
+    }
+
+    function validateAndSetFile(file) {
+      const noticeEl = document.getElementById('upload-notice');
+      noticeEl.innerHTML = '';
+
+      if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+        noticeEl.innerHTML = '<div class="notice notice-error">Only PDF files are supported.</div>';
+        clearSelectedFile();
+        return;
+      }
+
+      state.selectedFile = file;
+      document.getElementById('selected-file-name').textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+      document.getElementById('selected-file-container').style.display = 'block';
+      document.getElementById('upload-btn').disabled = false;
+      document.getElementById('upload-result-container').style.display = 'none';
+    }
+
+    function clearSelectedFile() {
+      state.selectedFile = null;
+      document.getElementById('file-input').value = '';
+      document.getElementById('selected-file-container').style.display = 'none';
+      document.getElementById('upload-btn').disabled = true;
+    }
+
+    async function handleUpload() {
+      if (!state.selectedFile || state.isUploading) return;
+
+      const noticeEl = document.getElementById('upload-notice');
+      const resultContainer = document.getElementById('upload-result-container');
+      const uploadBtn = document.getElementById('upload-btn');
+
+      noticeEl.innerHTML = '';
+      resultContainer.style.display = 'none';
+      resultContainer.innerHTML = '';
+
+      state.isUploading = true;
+      uploadBtn.disabled = true;
+      uploadBtn.innerHTML = '<span class="loading-inline"></span><span>Analyzing Document...</span>';
+
+      const formData = new FormData();
+      formData.append('file', state.selectedFile);
+
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          body: formData
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || errData.message || `Server returned status ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        noticeEl.innerHTML = '<div class="notice notice-success">Document successfully uploaded and classified!</div>';
+
+        // Render result card
+        const fileName = escapeHtml(data.file_name || state.selectedFile.name);
+        const category = escapeHtml(data.category || 'Uncategorized');
+        const confidence = formatConfidence(data.confidence);
+        const title = escapeHtml(data.title || 'Untitled');
+        const author = escapeHtml(data.author || 'Unknown');
+        const date = formatDate(data.date);
+        const summary = escapeHtml(data.summary || 'No summary generated.');
+        const topics = formatTopics(data.key_topics);
+
+        resultContainer.innerHTML = `
+          <div class="result-card">
+            <div class="result-card-header">
+              <div>
+                <div class="result-card-title">${fileName}</div>
+                <div class="text-secondary" style="font-size: 12px; margin-top: 2px;">Classification Result</div>
+              </div>
+              <span class="result-category-badge">${category} &bull; ${confidence}</span>
+            </div>
+
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="detail-label">Title</span>
+                <span class="detail-val" style="font-weight: 500;">${title}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Author</span>
+                <span class="detail-val">${author}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Date</span>
+                <span class="detail-val">${date}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Confidence</span>
+                <span class="detail-val">${confidence}</span>
+              </div>
+            </div>
+
+            <div class="detail-summary">
+              <div class="detail-label">Summary</div>
+              <p>${summary}</p>
+            </div>
+
+            <div>
+              <div class="detail-label">Key Topics</div>
+              <div class="detail-val" style="margin-top: 4px;">${topics}</div>
+            </div>
+          </div>
+        `;
+        resultContainer.style.display = 'block';
+
+        // Clear file selection after successful upload
+        clearSelectedFile();
+      } catch (err) {
+        noticeEl.innerHTML = `<div class="notice notice-error">Upload failed: ${escapeHtml(err.message)}</div>`;
+      } finally {
+        state.isUploading = false;
+        uploadBtn.innerHTML = '<span>Upload & Process</span>';
+        uploadBtn.disabled = !state.selectedFile;
+      }
+    }
+
+    // Initial Load - Check Authentication
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+    });
+  </script>
+</body>
+</html>

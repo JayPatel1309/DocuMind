@@ -116,78 +116,72 @@ def keytopics_find(text_sample):
     return cosine_sm_words_list[:7]
 
 
+def process_pdf(file_path: str) -> dict:
+    file_name, absolute_path, file_size, mime_type = file_info(file_path)
+    print("File size is: ", file_size)
+    print("File name is: ", file_name)
+    print("File absolute path is : ", absolute_path)
+    print("File type is : ", mime_type)
+    reader = pypdf2.PdfReader(file_path)
+    text = ''
+    for page in reader.pages:
+        extracted = page.extract_text()
+        if extracted:
+            text += extracted + ' '
 
-#pdf reader
-folder_path = Path(r"P:\AI-Powered Document Classification and Intelligent Indexing\data\doc_fin")
-for path_object in folder_path.glob("*.pdf"):
-    file_path = str(path_object)
-    if os.path.exists(file_path):
-        file_name, absolute_path, file_size, mime_type=file_info(file_path)
-        print("File size is: ",file_size)
-        print("File name is: ",file_name)
-        print("File absolute path is : ",absolute_path)
-        print("File type is : ",mime_type)
-        reader=pypdf2.PdfReader(file_path)
-        text = ''
-        for page in reader.pages:
-            extracted = page.extract_text()
-            if extracted:
-                text += extracted + ' '
+    # splitting into sentences
+    sentences = text.split("\n")
+    sentences.pop()
+    # labeling the texts
+    nlp = spacy.load('en_core_web_sm')
+    doc = nlp(text)
 
+    date, author, title = detail_extraction(text)
 
-        #print(text_sample)
+    # Label extraction
+    orgs = []
+    dates = []
+    for ent in doc.ents:
+        if ent.label_ == "ORG":
+            orgs.append(ent.text)
+        elif ent.label_ == "DATE":
+            dates.append(ent.text)
+    text_sum = text
+    text = clean_text(text)
+    text_embedding = embedder.encode([text])
+    predicted_class = model.predict(text_embedding)
+    predicted_category = encoder.inverse_transform(predicted_class)[0]
+    predict_id = fetch_category_id(predicted_category)
+    print("Predicted Category:", predicted_category)
+    safe_predicted_class = int(predicted_class[0])
+    probabilities = model.predict_proba(text_embedding)[0]
+    confidence = max(probabilities)
+    safe_confidence = float(confidence)
+    summary_text = summary_creator(text_sum)
+    keytopics = keytopics_find(text)
+    sentences_fullstop = text_sum.split(".")
+    chunk_index = 0
 
-        #splitting into sentences
-        sentences=text.split("\n")
-        sentences.pop()
-        #labeling the texts
-        nlp=spacy.load('en_core_web_sm')
-        doc=nlp(text)
+    enter_data_documents(str(file_name), absolute_path, mime_type, file_size, predict_id, safe_confidence, date)
+    enter_data_documents_metadata(str(file_name), title, author, date, summary_text, keytopics)
+    for sentence in sentences_fullstop:
+        sentence = sentence.strip()
+        if len(sentence) < 15:
+            continue
+        index = faiss_index(
+            r'P:\AI-Powered Document Classification and Intelligent Indexing\vector_store\global_vector_index.faiss',
+            sentence, embedder)
+        enter_data_documents_chunk(file_name, chunk_index, sentence, index)
+        chunk_index += 1
 
-        date,author,title=detail_extraction(text)
-
-        #Label extraction
-        orgs=[]
-        dates=[]
-        for ent in doc.ents:
-            if ent.label_=="ORG":
-                orgs.append(ent.text)
-            elif ent.label_=="DATE":
-                dates.append(ent.text)
-        text_sum=text
-        text=clean_text(text)
-        text_embedding=embedder.encode([text])
-        predicted_class=model.predict(text_embedding)
-        predicted_category=encoder.inverse_transform(predicted_class)[0]
-        predict_id=fetch_category_id(predicted_category)
-        print("Predicted Category:",predicted_category)
-        safe_predicted_class = int(predicted_class[0])
-        probabilities = model.predict_proba(text_embedding)[0]
-        confidence = max(probabilities)
-        safe_confidence = float(confidence)
-        summary_text=summary_creator(text_sum)
-        keytopics=keytopics_find(text)
-        sentences_fullstop=text_sum.split(".")
-        chunk = []
-        chunk_index=0
-
-        enter_data_documents(str(file_name),absolute_path,mime_type,file_size,predict_id,safe_confidence,date)
-        enter_data_documents_metadata(str(file_name),title,author,date,summary_text,keytopics)
-        for sentence in sentences_fullstop:
-            sentence = sentence.strip()
-            if len(sentence) < 15:
-                continue
-            index = faiss_index(
-                r'P:\AI-Powered Document Classification and Intelligent Indexing\vector_store\global_vector_index.faiss',
-                sentence, embedder)
-            enter_data_documents_chunk(file_name, chunk_index, sentence, index)
-            chunk_index += 1
-
-
-
-
-
-
-
-
-
+    return {
+        "file_name": file_name,
+        "category": predicted_category,
+        "category_id": predict_id,
+        "confidence": safe_confidence,
+        "title": title,
+        "author": author,
+        "date": date,
+        "summary": summary_text,
+        "key_topics": keytopics,
+    }
